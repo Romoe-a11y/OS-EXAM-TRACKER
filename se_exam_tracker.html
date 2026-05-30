@@ -1,0 +1,1644 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SE Exam Revision Tracker</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --surface: #ffffff;
+      --ink: #17202f;
+      --muted: #607089;
+      --line: #dce4ef;
+      --teal: #0f9f9a;
+      --teal-dark: #08706f;
+      --blue: #3369d6;
+      --coral: #ef6a5b;
+      --amber: #f3b23c;
+      --green: #48a868;
+      --violet: #685bd6;
+      --shadow: 0 16px 42px rgba(23, 32, 47, 0.10);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #ffffff 0, #f5f8fb 250px),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      width: min(1220px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 38px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 16px 0 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 58px;
+      height: 58px;
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      display: grid;
+      place-items: center;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(1.35rem, 2.4vw, 2.1rem);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      min-height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      background: var(--surface);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 5px 16px rgba(23, 32, 47, 0.06);
+    }
+
+    .btn.primary {
+      border-color: var(--teal);
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .btn.danger {
+      border-color: #efc3bf;
+      color: #a43025;
+      background: #fff7f6;
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 250px repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel,
+    .stat-card,
+    .topic-card,
+    .revision-card,
+    .log-panel,
+    .exercise-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .progress-panel {
+      min-height: 178px;
+      padding: 16px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .ring {
+      --progress: 0deg;
+      width: 124px;
+      height: 124px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, #fff 0 58%, transparent 59%),
+        conic-gradient(var(--teal) var(--progress), #edf1f7 0);
+      border: 1px solid #edf1f7;
+      display: grid;
+      place-items: center;
+    }
+
+    .ring strong {
+      font-size: 1.85rem;
+      line-height: 1;
+    }
+
+    .progress-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .stat-card {
+      min-height: 118px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stat-card::after {
+      content: "";
+      position: absolute;
+      right: 14px;
+      bottom: 12px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      opacity: 0.14;
+      background: currentColor;
+    }
+
+    .stat-card h2 {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-card strong {
+      margin-top: 10px;
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .stat-card.teal { color: var(--teal-dark); }
+    .stat-card.blue { color: var(--blue); }
+    .stat-card.coral { color: var(--coral); }
+    .stat-card.amber { color: #a46b00; }
+
+    .revision-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .revision-card {
+      padding: 14px;
+      min-height: 176px;
+    }
+
+    .revision-card h2 {
+      margin: 0 0 9px;
+      font-size: 1rem;
+    }
+
+    .revision-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.91rem;
+    }
+
+    .formula-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .formula-list li {
+      border: 1px solid #edf1f7;
+      border-radius: 8px;
+      background: #fbfcfe;
+      padding: 8px 9px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    .formula-list code,
+    .revision-card code,
+    .exercise-card code {
+      background: #f3f6fa;
+      border: 1px solid #e3e9f2;
+      border-radius: 6px;
+      padding: 2px 6px;
+      color: #223044;
+      white-space: normal;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) minmax(150px, 220px) minmax(150px, 220px);
+      gap: 10px;
+      margin: 12px 0 14px;
+    }
+
+    .control input,
+    .control select,
+    textarea {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--ink);
+      padding: 0 12px;
+      outline: none;
+    }
+
+    .control input:focus,
+    .control select:focus,
+    textarea:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(15, 159, 154, 0.15);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .tab {
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab.active {
+      border-color: var(--teal);
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 348px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .topic-list,
+    .exercise-list,
+    .side-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .section-title {
+      margin: 4px 0 2px;
+      font-size: 1rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .topic-card {
+      padding: 12px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) 146px;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .topic-card.mastered {
+      border-color: rgba(72, 168, 104, 0.45);
+      background: linear-gradient(90deg, rgba(72, 168, 104, 0.08), #fff 28%);
+    }
+
+    .topic-card.practiced {
+      border-color: rgba(15, 159, 154, 0.42);
+    }
+
+    .chapter-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #eef7f7;
+      color: var(--teal-dark);
+      font-weight: 850;
+      border: 1px solid #d4ecea;
+    }
+
+    .topic-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .topic-title h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.25;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: #f0f3f8;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .pill.course { background: #eaf2ff; color: #2f5db9; }
+    .pill.practical { background: #e9f7f6; color: var(--teal-dark); }
+    .pill.exam { background: #fff2d8; color: #8a5a00; }
+    .pill.advanced { background: #f0eefc; color: #554abb; }
+
+    .topic-card p {
+      margin: 6px 0 8px;
+      color: var(--muted);
+      line-height: 1.4;
+      font-size: 0.91rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .tag-row code {
+      background: #f3f6fa;
+      border: 1px solid #e3e9f2;
+      border-radius: 6px;
+      padding: 2px 6px;
+      color: #223044;
+      line-height: 1.6;
+      font-size: 0.78rem;
+    }
+
+    .status-select {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 9px;
+    }
+
+    .topic-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .mini-progress {
+      height: 7px;
+      border-radius: 999px;
+      background: #edf1f7;
+      overflow: hidden;
+    }
+
+    .mini-progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--teal), var(--green));
+    }
+
+    .exercise-card {
+      padding: 14px;
+    }
+
+    .exercise-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .exercise-card p {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.91rem;
+      line-height: 1.45;
+    }
+
+    .mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 0.82rem;
+    }
+
+    .mini-table th,
+    .mini-table td {
+      border: 1px solid #e6edf5;
+      padding: 5px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .mini-table th {
+      color: var(--muted);
+      background: #f7f9fc;
+      font-weight: 800;
+    }
+
+    .log-panel {
+      padding: 14px;
+    }
+
+    .log-panel h2 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+
+    .next-list,
+    .learned-list,
+    .activity-list,
+    .master-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .next-list li,
+    .activity-list li,
+    .master-list li {
+      border: 1px solid #edf1f7;
+      background: #fbfcfe;
+      border-radius: 8px;
+      padding: 9px 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    .learned-list li {
+      border: 1px solid #d8efdf;
+      border-radius: 8px;
+      background: #f2fbf5;
+      color: #28613f;
+      padding: 9px 10px;
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    .note-form {
+      display: grid;
+      gap: 8px;
+    }
+
+    textarea {
+      min-height: 96px;
+      padding: 10px 12px;
+      resize: vertical;
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 16px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      max-width: min(340px, calc(100vw - 36px));
+      background: #17202f;
+      color: #fff;
+      padding: 10px 13px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: 180ms ease;
+      z-index: 20;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1050px) {
+      .dashboard,
+      .revision-grid,
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .topbar,
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app-shell {
+        width: min(100% - 18px, 1220px);
+        padding-top: 12px;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .brand-mark {
+        width: 48px;
+        height: 48px;
+      }
+
+      .topic-card {
+        grid-template-columns: 1fr;
+      }
+
+      .chapter-badge {
+        width: auto;
+        height: 34px;
+        justify-self: start;
+        padding: 0 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 48 48" role="img">
+            <rect x="8" y="9" width="32" height="24" rx="5" fill="#e9f7f6" stroke="#0f9f9a" stroke-width="2"></rect>
+            <path d="M14 18h20M14 25h12M18 39h12M24 33v6" stroke="#0f9f9a" stroke-width="2.4" stroke-linecap="round"></path>
+            <circle cx="36" cy="34" r="6" fill="#ef6a5b"></circle>
+            <path d="M36 31v3l2 2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <div>
+          <h1>SE Exam Revision Tracker</h1>
+          <p>Process scheduling, memory management, formulas, TD drills, and local progress.</p>
+        </div>
+      </div>
+      <div class="actions" aria-label="Tracker actions">
+        <input id="importFileInput" type="file" accept="application/json,.json" hidden>
+        <button class="btn" id="importBtn" type="button" title="Import saved progress from JSON">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21V9m0 0 4 4m-4-4-4 4M5 5h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Import
+        </button>
+        <button class="btn" id="exportBtn" type="button" title="Export saved progress">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Export
+        </button>
+        <button class="btn primary" id="seedBtn" type="button" title="Seed topics from the resources already read">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Seed My Work
+        </button>
+        <button class="btn primary" id="saveWorkBtn" type="button" title="Save current progress locally">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3h10l2 2v16H6zM9 3v6h6V3M9 17h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Save My Work
+        </button>
+        <button class="btn" id="restoreWorkBtn" type="button" title="Restore last saved snapshot">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7v6h6M20 17v-6h-6M5 13a7 7 0 0 0 12 4M19 11A7 7 0 0 0 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Restore Save
+        </button>
+        <button class="btn danger" id="resetBtn" type="button" title="Reset local progress">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Reset
+        </button>
+      </div>
+    </header>
+
+    <section class="dashboard" aria-label="Progress dashboard">
+      <div class="panel progress-panel">
+        <div class="ring" id="progressRing"><strong id="overallPercent">0%</strong></div>
+        <p id="overallText">0 of 0 topics weighted complete</p>
+      </div>
+      <article class="stat-card teal">
+        <h2>Mastered</h2>
+        <strong id="masteredCount">0</strong>
+        <span>can solve without notes</span>
+      </article>
+      <article class="stat-card blue">
+        <h2>Process Core</h2>
+        <strong id="processPercent">0%</strong>
+        <span>scheduling and process states</span>
+      </article>
+      <article class="stat-card amber">
+        <h2>Memory Core</h2>
+        <strong id="memoryPercent">0%</strong>
+        <span>allocation and virtual memory</span>
+      </article>
+      <article class="stat-card coral">
+        <h2>Next Focus</h2>
+        <strong id="nextChapter">P1</strong>
+        <span id="nextFocusLabel">first unfinished topic</span>
+      </article>
+    </section>
+
+    <section class="revision-grid" aria-label="Fast revision">
+      <article class="revision-card">
+        <h2>Scheduling Formulas</h2>
+        <ul class="formula-list">
+          <li><code>Turnaround</code> = finish time - arrival time</li>
+          <li><code>Waiting</code> = turnaround - total CPU burst</li>
+          <li><code>Response</code> = first CPU start - arrival time</li>
+          <li><code>Throughput</code> = completed processes / total time</li>
+        </ul>
+      </article>
+      <article class="revision-card">
+        <h2>Algorithm Rules</h2>
+        <ul>
+          <li><strong>FCFS:</strong> first ready process runs first.</li>
+          <li><strong>SJF:</strong> shortest burst among ready processes.</li>
+          <li><strong>SRTF:</strong> shortest remaining time, preemptive.</li>
+          <li><strong>RR:</strong> circular queue with a fixed quantum.</li>
+          <li><strong>HPF:</strong> highest priority, preemptive or not.</li>
+        </ul>
+      </article>
+      <article class="revision-card">
+        <h2>Memory Keywords</h2>
+        <ul>
+          <li><strong>MMU:</strong> converts logical address to physical address.</li>
+          <li><strong>Swapping:</strong> moves processes between RAM and disk.</li>
+          <li><strong>Fragmentation:</strong> wasted space, internal or external.</li>
+          <li><strong>Paging:</strong> pages go into frames.</li>
+          <li><strong>Virtual memory:</strong> runs programs larger than RAM.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="controls" aria-label="Filters">
+      <label class="control">
+        <input id="searchInput" type="search" placeholder="Search topic, formula, algorithm, exercise">
+      </label>
+      <label class="control">
+        <select id="statusFilter" aria-label="Filter by status">
+          <option value="all">All statuses</option>
+          <option value="not-started">Not started</option>
+          <option value="watched">Watched / read</option>
+          <option value="practiced">Practiced</option>
+          <option value="mastered">Mastered</option>
+        </select>
+      </label>
+      <label class="control">
+        <select id="typeFilter" aria-label="Filter by type">
+          <option value="all">All types</option>
+          <option value="course">Course</option>
+          <option value="practical">Practical</option>
+          <option value="exam">Exam</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </label>
+    </section>
+
+    <nav class="tabs" aria-label="Chapter filters" id="chapterTabs"></nav>
+
+    <main class="main-grid">
+      <section>
+        <h2 class="section-title">Study Topics</h2>
+        <div id="topicList" class="topic-list" aria-live="polite"></div>
+
+        <h2 class="section-title">TD / Exam Drills</h2>
+        <div class="exercise-list" id="exerciseList"></div>
+      </section>
+
+      <aside class="side-stack">
+        <section class="log-panel">
+          <h2>Next Things</h2>
+          <ul class="next-list" id="nextList"></ul>
+        </section>
+
+        <section class="log-panel">
+          <h2>Mastery Check</h2>
+          <ul class="master-list">
+            <li>Draw a Gantt chart without looking at the answer.</li>
+            <li>Calculate finish, turnaround, waiting, response, and throughput.</li>
+            <li>Explain why SRTF and RR are preemptive.</li>
+            <li>Translate logical address ideas into MMU, pages, frames, and segments.</li>
+            <li>Compare internal and external fragmentation with one example.</li>
+          </ul>
+        </section>
+
+        <section class="log-panel">
+          <h2>What You Already Know</h2>
+          <ul class="learned-list" id="learnedList"></ul>
+        </section>
+
+        <section class="log-panel">
+          <h2>Revision Log</h2>
+          <form class="note-form" id="noteForm">
+            <textarea id="noteInput" placeholder="Example: Solved TD3 Ex1 FCFS and SJF; waiting time formula still needs practice."></textarea>
+            <button class="btn primary" type="submit">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+              Add Log
+            </button>
+          </form>
+          <ul class="activity-list" id="activityList"></ul>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = "se-exam-tracker-v1";
+
+    const statusWeights = {
+      "not-started": 0,
+      watched: 0.33,
+      practiced: 0.7,
+      mastered: 1
+    };
+
+    const statusLabels = {
+      "not-started": "Not started",
+      watched: "Watched / read",
+      practiced: "Practiced",
+      mastered: "Mastered"
+    };
+
+    const topics = [
+      {
+        id: "p1-process-program",
+        chapter: "P1",
+        chapterName: "Processus",
+        title: "Program, process, and thread",
+        type: "course",
+        area: "process",
+        summary: "A program is passive code. A process is a running instance. A thread is a light execution path inside a process.",
+        tags: ["programme", "processus", "thread", "processus leger"],
+        seed: "watched"
+      },
+      {
+        id: "p1-pcb",
+        chapter: "P1",
+        chapterName: "Processus",
+        title: "PCB and process context",
+        type: "course",
+        area: "process",
+        summary: "Know what the OS stores for each process: state, registers, program counter, scheduling data, memory data, and I/O data.",
+        tags: ["PCB", "registre", "compteur ordinal", "contexte"],
+        seed: "watched"
+      },
+      {
+        id: "p1-states",
+        chapter: "P1",
+        chapterName: "Processus",
+        title: "Process states and queues",
+        type: "course",
+        area: "process",
+        summary: "Follow transitions between new, ready, running, blocked/waiting, and finished. Connect states to ready and waiting queues.",
+        tags: ["new", "ready", "running", "blocked", "terminated", "ready queue"],
+        seed: "not-started"
+      },
+      {
+        id: "p1-scheduling-levels",
+        chapter: "P1",
+        chapterName: "Processus",
+        title: "Scheduling levels",
+        type: "exam",
+        area: "process",
+        summary: "Separate long-term, medium-term, and short-term scheduling and know which one chooses the next CPU process.",
+        tags: ["long term", "medium term", "short term", "ordonnanceur"],
+        seed: "not-started"
+      },
+      {
+        id: "p2-metrics",
+        chapter: "P2",
+        chapterName: "Ordonnancement",
+        title: "Scheduling metrics",
+        type: "practical",
+        area: "process",
+        summary: "Calculate CPU utilization, throughput, turnaround time, waiting time, and response time from a Gantt chart.",
+        tags: ["utilisation UCT", "debit", "rotation", "attente", "reponse"],
+        seed: "not-started"
+      },
+      {
+        id: "p2-gantt",
+        chapter: "P2",
+        chapterName: "Ordonnancement",
+        title: "Gantt chart method",
+        type: "practical",
+        area: "process",
+        summary: "Build a timeline, place arrivals, choose the next process using the algorithm rule, then compute every metric.",
+        tags: ["Gantt", "arrival", "burst", "finish time"],
+        seed: "not-started"
+      },
+      {
+        id: "p2-fcfs-sjf",
+        chapter: "P2",
+        chapterName: "Ordonnancement",
+        title: "FCFS and SJF",
+        type: "practical",
+        area: "process",
+        summary: "FCFS uses arrival order. SJF chooses the shortest CPU burst among processes already ready.",
+        tags: ["FCFS", "SJF", "non preemptive"],
+        seed: "not-started"
+      },
+      {
+        id: "p2-srtf-rr",
+        chapter: "P2",
+        chapterName: "Ordonnancement",
+        title: "SRTF and Round Robin",
+        type: "practical",
+        area: "process",
+        summary: "SRTF can interrupt when a shorter remaining process arrives. RR rotates processes using a quantum.",
+        tags: ["SRTF", "RR", "quantum", "preemptive"],
+        seed: "not-started"
+      },
+      {
+        id: "p2-priority",
+        chapter: "P2",
+        chapterName: "Ordonnancement",
+        title: "Priority scheduling",
+        type: "practical",
+        area: "process",
+        summary: "Use priority values correctly, and separate preemptive HPF from non-preemptive HPF.",
+        tags: ["HPF", "priorite", "preemptif", "non preemptif"],
+        seed: "not-started"
+      },
+      {
+        id: "p3-supervisor",
+        chapter: "P3",
+        chapterName: "Superviseur",
+        title: "Interruptions and context switch",
+        type: "exam",
+        area: "process",
+        summary: "Understand why the OS stops a running process, saves context, loads another context, and resumes execution.",
+        tags: ["interruption", "context switch", "superviseur", "dispatcher"],
+        seed: "not-started"
+      },
+      {
+        id: "m1-memory-basics",
+        chapter: "M1",
+        chapterName: "Memoire",
+        title: "Main memory and secondary memory",
+        type: "course",
+        area: "memory",
+        summary: "RAM is directly used by the CPU. Secondary memory stores data permanently but is slower.",
+        tags: ["memoire vive", "memoire de masse", "RAM", "disk"],
+        seed: "watched"
+      },
+      {
+        id: "m1-addresses",
+        chapter: "M1",
+        chapterName: "Memoire",
+        title: "Logical and physical addresses",
+        type: "course",
+        area: "memory",
+        summary: "The process uses logical addresses. The MMU translates them into real physical addresses in RAM.",
+        tags: ["adresse logique", "adresse physique", "MMU", "translation"],
+        seed: "not-started"
+      },
+      {
+        id: "m1-protection",
+        chapter: "M1",
+        chapterName: "Memoire",
+        title: "Memory protection and swapping",
+        type: "exam",
+        area: "memory",
+        summary: "Protection keeps processes separated. Swapping moves processes between RAM and disk when memory is limited.",
+        tags: ["protection", "swapping", "va-et-vient", "context switch"],
+        seed: "not-started"
+      },
+      {
+        id: "m2-contiguous",
+        chapter: "M2",
+        chapterName: "Allocation",
+        title: "Contiguous allocation",
+        type: "course",
+        area: "memory",
+        summary: "A process occupies one continuous memory block. Know fixed partitions and dynamic partitions.",
+        tags: ["allocation contigue", "partition fixe", "partition dynamique"],
+        seed: "not-started"
+      },
+      {
+        id: "m2-fragmentation",
+        chapter: "M2",
+        chapterName: "Allocation",
+        title: "Internal and external fragmentation",
+        type: "practical",
+        area: "memory",
+        summary: "Internal fragmentation is wasted space inside an allocated block. External fragmentation is free space split between blocks.",
+        tags: ["fragmentation interne", "fragmentation externe", "compaction"],
+        seed: "not-started"
+      },
+      {
+        id: "m3-segmentation",
+        chapter: "M3",
+        chapterName: "Non Contigue",
+        title: "Segmentation",
+        type: "course",
+        area: "memory",
+        summary: "A program is divided into logical segments such as code, data, and stack, each with base and limit information.",
+        tags: ["segmentation", "segment", "base", "limit"],
+        seed: "not-started"
+      },
+      {
+        id: "m3-paging",
+        chapter: "M3",
+        chapterName: "Non Contigue",
+        title: "Paging: pages and frames",
+        type: "practical",
+        area: "memory",
+        summary: "Logical memory is split into pages. Physical memory is split into frames. Pages are loaded into frames.",
+        tags: ["pagination", "page", "cadre", "frame", "table des pages"],
+        seed: "not-started"
+      },
+      {
+        id: "m3-page-address",
+        chapter: "M3",
+        chapterName: "Non Contigue",
+        title: "Paging address calculation",
+        type: "practical",
+        area: "memory",
+        summary: "Split a logical address into page number and offset, then use the page table to find the frame.",
+        tags: ["page number", "offset", "frame number", "adresse physique"],
+        seed: "not-started"
+      },
+      {
+        id: "m4-virtual-memory",
+        chapter: "M4",
+        chapterName: "Virtuelle",
+        title: "Virtual memory",
+        type: "advanced",
+        area: "memory",
+        summary: "Virtual memory lets a process run even if the whole program is not loaded into RAM at once.",
+        tags: ["memoire virtuelle", "page fault", "demand paging"],
+        seed: "not-started"
+      },
+      {
+        id: "exam-method",
+        chapter: "EX",
+        chapterName: "Exam",
+        title: "Exam answer method",
+        type: "exam",
+        area: "exam",
+        summary: "For each exercise, write assumptions, draw the timeline, compute table columns, then give averages and throughput.",
+        tags: ["method", "table", "average", "debit"],
+        seed: "not-started"
+      }
+    ];
+
+    const exercises = [
+      {
+        id: "td3-ex1",
+        title: "TD3 Exercice 1: FCFS, SJF, SRTF, RR q=4",
+        summary: "Use P1..P5 arrivals and CPU bursts. Draw each Gantt chart, then compute turnaround, waiting, averages, and throughput.",
+        tags: ["FCFS", "SJF", "SRTF", "RR q=4"],
+        rows: [
+          ["P1", "0", "3"],
+          ["P2", "2", "6"],
+          ["P3", "4", "4"],
+          ["P4", "6", "5"],
+          ["P5", "8", "2"]
+        ],
+        headers: ["Process", "Arrival", "CPU burst"]
+      },
+      {
+        id: "td3-ex2",
+        title: "TD3 Exercice 2: HPF non-preemptive and preemptive",
+        summary: "Higher priority number means more important. Compare what changes when HPF becomes preemptive.",
+        tags: ["HPF", "priority", "preemptive"],
+        rows: [
+          ["A", "0", "5", "4"],
+          ["B", "2", "4", "2"],
+          ["C", "2", "2", "6"],
+          ["D", "4", "4", "3"]
+        ],
+        headers: ["Process", "Arrival", "CPU burst", "Priority"]
+      },
+      {
+        id: "td3-ex3",
+        title: "TD3 Exercice 3: CPU/I-O cycles for 30 U.T",
+        summary: "Processes repeat CPU then I/O. Assume they do not wait for I/O. Compare FCFS, SJF, and RR q=3.",
+        tags: ["CPU cycle", "E/S", "FCFS", "SJF", "RR q=3"],
+        rows: [
+          ["A", "0", "7 UCT then 2 E/S"],
+          ["B", "1", "2 UCT then 2 E/S"],
+          ["C", "2", "5 UCT then 4 E/S"]
+        ],
+        headers: ["Process", "Arrival", "Repeated cycle"]
+      },
+      {
+        id: "td3-ex4",
+        title: "TD3 Exercice 4: RR priority and shared I/O devices",
+        summary: "First case: RR q=3 with priority index. Second case: two I/O devices, CPU RR q=4, I/O queues FCFS.",
+        tags: ["RR priority", "I/O queue", "FCFS E/S"],
+        rows: [
+          ["A", "0", "6 UCT then 3 E/S"],
+          ["B", "1", "2 UCT then 6 E/S"],
+          ["C", "2", "4 UCT then 1 E/S"],
+          ["D", "3", "1 UCT then 3 E/S"]
+        ],
+        headers: ["Process", "Arrival", "Repeated cycle"]
+      },
+      {
+        id: "td3-ex5",
+        title: "TD3 Exercice 5: One shared I/O device and priority RR",
+        summary: "All processes share the same I/O peripheral. I/O is FCFS. CPU is RR q=3 with priority index incremented after execution.",
+        tags: ["RR q=3", "priority", "one I/O", "FCFS E/S"],
+        rows: [
+          ["A", "0", "6 UCT then 3 E/S"],
+          ["B", "1", "3 UCT then 4 E/S"],
+          ["C", "2", "3 UCT then 1 E/S"],
+          ["D", "10", "1 UCT then 3 E/S"],
+          ["E", "11", "5 UCT then 2 E/S"]
+        ],
+        headers: ["Process", "Arrival", "Repeated cycle"]
+      }
+    ];
+
+    let state = loadState();
+    let activeChapter = "all";
+
+    const els = {
+      topicList: document.getElementById("topicList"),
+      exerciseList: document.getElementById("exerciseList"),
+      chapterTabs: document.getElementById("chapterTabs"),
+      searchInput: document.getElementById("searchInput"),
+      statusFilter: document.getElementById("statusFilter"),
+      typeFilter: document.getElementById("typeFilter"),
+      overallPercent: document.getElementById("overallPercent"),
+      overallText: document.getElementById("overallText"),
+      progressRing: document.getElementById("progressRing"),
+      masteredCount: document.getElementById("masteredCount"),
+      processPercent: document.getElementById("processPercent"),
+      memoryPercent: document.getElementById("memoryPercent"),
+      nextChapter: document.getElementById("nextChapter"),
+      nextFocusLabel: document.getElementById("nextFocusLabel"),
+      nextList: document.getElementById("nextList"),
+      learnedList: document.getElementById("learnedList"),
+      activityList: document.getElementById("activityList"),
+      noteForm: document.getElementById("noteForm"),
+      noteInput: document.getElementById("noteInput"),
+      resetBtn: document.getElementById("resetBtn"),
+      importBtn: document.getElementById("importBtn"),
+      importFileInput: document.getElementById("importFileInput"),
+      exportBtn: document.getElementById("exportBtn"),
+      seedBtn: document.getElementById("seedBtn"),
+      saveWorkBtn: document.getElementById("saveWorkBtn"),
+      restoreWorkBtn: document.getElementById("restoreWorkBtn"),
+      toast: document.getElementById("toast")
+    };
+
+    init();
+
+    function init() {
+      renderTabs();
+      bindEvents();
+      render();
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          return {
+            statuses: { ...defaultStatuses("not-started"), ...(parsed.statuses || {}) },
+            notes: Array.isArray(parsed.notes) ? parsed.notes : [],
+            lastSavedWork: normalizeSnapshot(parsed.lastSavedWork)
+          };
+        } catch (error) {
+          return { statuses: defaultStatuses("not-started"), notes: [], lastSavedWork: null };
+        }
+      }
+
+      return { statuses: defaultStatuses("not-started"), notes: [], lastSavedWork: null };
+    }
+
+    function defaultStatuses(mode) {
+      const statuses = {};
+      topics.forEach((topic) => {
+        statuses[topic.id] = mode === "seed" ? topic.seed : "not-started";
+      });
+      exercises.forEach((exercise) => {
+        statuses[exercise.id] = mode === "seed" ? "watched" : "not-started";
+      });
+      return statuses;
+    }
+
+    function allItems() {
+      return [
+        ...topics,
+        ...exercises.map((exercise) => ({
+          ...exercise,
+          chapter: "TD",
+          chapterName: "Exercices",
+          type: "practical",
+          area: "process"
+        }))
+      ];
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function bindEvents() {
+      [els.searchInput, els.statusFilter, els.typeFilter].forEach((el) => {
+        el.addEventListener("input", render);
+      });
+
+      els.noteForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const text = els.noteInput.value.trim();
+        if (!text) return;
+        state.notes.unshift({
+          id: Date.now(),
+          text,
+          date: new Date().toLocaleString()
+        });
+        els.noteInput.value = "";
+        saveState();
+        renderActivity();
+        showToast("Revision log saved locally.");
+      });
+
+      els.resetBtn.addEventListener("click", () => {
+        if (!confirm("Reset all saved SE progress on this device?")) return;
+        state = { statuses: defaultStatuses("not-started"), notes: [], lastSavedWork: null };
+        saveState();
+        render();
+        showToast("Progress reset.");
+      });
+
+      els.seedBtn.addEventListener("click", () => {
+        if (!state.lastSavedWork) {
+          state.lastSavedWork = createSnapshot();
+        }
+        state.statuses = defaultStatuses("seed");
+        saveState();
+        render();
+        showToast("Seed applied. Last saved work is backed up.");
+      });
+
+      els.saveWorkBtn.addEventListener("click", () => {
+        state.lastSavedWork = createSnapshot();
+        saveState();
+        showToast("Current progress saved and backed up.");
+      });
+
+      els.restoreWorkBtn.addEventListener("click", () => {
+        if (!state.lastSavedWork) {
+          showToast("No saved work backup yet.");
+          return;
+        }
+        state.statuses = { ...defaultStatuses("not-started"), ...state.lastSavedWork.statuses };
+        state.notes = Array.isArray(state.lastSavedWork.notes) ? [...state.lastSavedWork.notes] : [];
+        saveState();
+        render();
+        showToast("Last saved work restored.");
+      });
+
+      els.exportBtn.addEventListener("click", () => {
+        saveState();
+        const payload = JSON.stringify({
+          app: "SE Exam Revision Tracker",
+          exportedAt: new Date().toISOString(),
+          state
+        }, null, 2);
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const date = new Date().toISOString().slice(0, 10);
+        link.href = url;
+        link.download = `se-exam-progress-${date}.json`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        showToast("Progress exported as a file.");
+      });
+
+      els.importBtn.addEventListener("click", () => {
+        els.importFileInput.click();
+      });
+
+      els.importFileInput.addEventListener("change", async () => {
+        const file = els.importFileInput.files && els.importFileInput.files[0];
+        els.importFileInput.value = "";
+        if (!file) return;
+
+        try {
+          const imported = JSON.parse(await file.text());
+          const importedState = normalizeImportedState(imported);
+          if (!importedState) {
+            showToast("Import failed: invalid progress file.");
+            return;
+          }
+          state = importedState;
+          saveState();
+          render();
+          showToast("Progress imported successfully.");
+        } catch (error) {
+          showToast("Import failed: invalid JSON file.");
+        }
+      });
+    }
+
+    function normalizeImportedState(imported) {
+      const rawState = imported && imported.state ? imported.state : imported;
+      if (!rawState || typeof rawState !== "object" || typeof rawState.statuses !== "object") {
+        return null;
+      }
+
+      const validStatuses = new Set(Object.keys(statusLabels));
+      const statuses = defaultStatuses("not-started");
+      allItems().forEach((item) => {
+        const importedStatus = rawState.statuses[item.id];
+        if (validStatuses.has(importedStatus)) {
+          statuses[item.id] = importedStatus;
+        }
+      });
+
+      const notes = Array.isArray(rawState.notes)
+        ? rawState.notes
+            .filter((note) => note && typeof note.text === "string")
+            .map((note) => ({
+              id: note.id || Date.now(),
+              text: note.text,
+              date: note.date || new Date().toLocaleString()
+            }))
+        : [];
+
+      return {
+        statuses,
+        notes,
+        lastSavedWork: normalizeSnapshot(rawState.lastSavedWork)
+      };
+    }
+
+    function createSnapshot() {
+      return {
+        savedAt: new Date().toISOString(),
+        statuses: { ...state.statuses },
+        notes: Array.isArray(state.notes) ? [...state.notes] : []
+      };
+    }
+
+    function normalizeSnapshot(snapshot) {
+      if (!snapshot || typeof snapshot !== "object" || typeof snapshot.statuses !== "object") {
+        return null;
+      }
+
+      const validStatuses = new Set(Object.keys(statusLabels));
+      const statuses = defaultStatuses("not-started");
+      allItems().forEach((item) => {
+        const importedStatus = snapshot.statuses[item.id];
+        if (validStatuses.has(importedStatus)) {
+          statuses[item.id] = importedStatus;
+        }
+      });
+
+      const notes = Array.isArray(snapshot.notes)
+        ? snapshot.notes
+            .filter((note) => note && typeof note.text === "string")
+            .map((note) => ({
+              id: note.id || Date.now(),
+              text: note.text,
+              date: note.date || new Date().toLocaleString()
+            }))
+        : [];
+
+      return {
+        savedAt: snapshot.savedAt || new Date().toISOString(),
+        statuses,
+        notes
+      };
+    }
+
+    function renderTabs() {
+      const chapters = [
+        { id: "all", label: "All" },
+        ...Array.from(new Map(topics.map((topic) => [topic.chapter, topic.chapterName])).entries())
+          .map(([id, name]) => ({ id, label: `${id} ${name}` })),
+        { id: "TD", label: "TD Exercices" }
+      ];
+
+      els.chapterTabs.innerHTML = "";
+      chapters.forEach((chapter) => {
+        const button = document.createElement("button");
+        button.className = "tab" + (chapter.id === activeChapter ? " active" : "");
+        button.type = "button";
+        button.textContent = chapter.label;
+        button.addEventListener("click", () => {
+          activeChapter = chapter.id;
+          renderTabs();
+          render();
+        });
+        els.chapterTabs.appendChild(button);
+      });
+    }
+
+    function render() {
+      renderStats();
+      renderTopics();
+      renderExercises();
+      renderSidebars();
+      renderActivity();
+    }
+
+    function renderStats() {
+      const items = allItems();
+      const total = items.reduce((sum, item) => sum + statusWeights[state.statuses[item.id]], 0);
+      const percent = Math.round((total / items.length) * 100);
+      const mastered = items.filter((item) => state.statuses[item.id] === "mastered").length;
+      const processItems = items.filter((item) => item.area === "process");
+      const memoryItems = items.filter((item) => item.area === "memory");
+      const processTotal = processItems.reduce((sum, item) => sum + statusWeights[state.statuses[item.id]], 0);
+      const memoryTotal = memoryItems.reduce((sum, item) => sum + statusWeights[state.statuses[item.id]], 0);
+      const processPercent = Math.round((processTotal / processItems.length) * 100);
+      const memoryPercent = Math.round((memoryTotal / memoryItems.length) * 100);
+      const next = items.find((item) => state.statuses[item.id] !== "mastered") || items[0];
+
+      els.overallPercent.textContent = `${percent}%`;
+      els.overallText.textContent = `${weightedDone(total)} of ${items.length} topics weighted complete`;
+      els.progressRing.style.setProperty("--progress", `${percent * 3.6}deg`);
+      els.masteredCount.textContent = mastered;
+      els.processPercent.textContent = `${processPercent}%`;
+      els.memoryPercent.textContent = `${memoryPercent}%`;
+      els.nextChapter.textContent = next.chapter;
+      els.nextFocusLabel.textContent = next.title;
+    }
+
+    function renderTopics() {
+      const filtered = getFilteredTopics(topics);
+      els.topicList.innerHTML = "";
+
+      if (!filtered.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No study topics match the current filters.";
+        els.topicList.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach((topic) => {
+        els.topicList.appendChild(createTopicCard(topic));
+      });
+    }
+
+    function renderExercises() {
+      const normalized = exercises.map((exercise) => ({
+        ...exercise,
+        chapter: "TD",
+        chapterName: "Exercices",
+        type: "practical",
+        area: "process"
+      }));
+      const filtered = getFilteredTopics(normalized);
+      els.exerciseList.innerHTML = "";
+
+      if (!filtered.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No TD exercises match the current filters.";
+        els.exerciseList.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach((exercise) => {
+        const card = document.createElement("article");
+        card.className = "exercise-card";
+
+        const status = state.statuses[exercise.id];
+        const tableRows = exercise.rows.map((row) => {
+          const cells = row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("");
+          return `<tr>${cells}</tr>`;
+        }).join("");
+        const headers = exercise.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("");
+
+        card.innerHTML = `
+          <div class="topic-title">
+            <h3>${escapeHtml(exercise.title)}</h3>
+            <span class="pill practical">practical</span>
+          </div>
+          <p>${escapeHtml(exercise.summary)}</p>
+          <div class="tag-row">${exercise.tags.map((tag) => `<code>${escapeHtml(tag)}</code>`).join("")}</div>
+          <table class="mini-table">
+            <thead><tr>${headers}</tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table>
+        `;
+
+        const controls = document.createElement("div");
+        controls.className = "topic-actions";
+        controls.style.marginTop = "10px";
+        controls.append(createStatusSelect(exercise), createMiniProgress(status));
+        card.appendChild(controls);
+        els.exerciseList.appendChild(card);
+      });
+    }
+
+    function createTopicCard(topic) {
+      const status = state.statuses[topic.id];
+      const article = document.createElement("article");
+      article.className = `topic-card ${status}`;
+
+      const badge = document.createElement("div");
+      badge.className = "chapter-badge";
+      badge.textContent = topic.chapter;
+
+      const body = document.createElement("div");
+      const header = document.createElement("div");
+      header.className = "topic-title";
+      header.innerHTML = `<h3>${escapeHtml(topic.title)}</h3><span class="pill ${topic.type}">${escapeHtml(topic.type)}</span>`;
+
+      const summary = document.createElement("p");
+      summary.textContent = topic.summary;
+
+      const tags = document.createElement("div");
+      tags.className = "tag-row";
+      tags.innerHTML = topic.tags.map((tag) => `<code>${escapeHtml(tag)}</code>`).join("");
+
+      body.append(header, summary, tags);
+
+      const controls = document.createElement("div");
+      controls.className = "topic-actions";
+      controls.append(createStatusSelect(topic), createMiniProgress(status));
+
+      article.append(badge, body, controls);
+      return article;
+    }
+
+    function createStatusSelect(item) {
+      const select = document.createElement("select");
+      select.className = "status-select";
+      select.setAttribute("aria-label", `Status for ${item.title}`);
+
+      Object.entries(statusLabels).forEach(([value, label]) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = label;
+        if (value === state.statuses[item.id]) option.selected = true;
+        select.appendChild(option);
+      });
+
+      select.addEventListener("change", () => {
+        state.statuses[item.id] = select.value;
+        saveState();
+        render();
+        showToast(`${item.title}: ${statusLabels[select.value]}`);
+      });
+
+      return select;
+    }
+
+    function createMiniProgress(status) {
+      const mini = document.createElement("div");
+      mini.className = "mini-progress";
+      mini.innerHTML = `<span style="width:${statusWeights[status] * 100}%"></span>`;
+      return mini;
+    }
+
+    function getFilteredTopics(items) {
+      const query = els.searchInput.value.trim().toLowerCase();
+      const status = els.statusFilter.value;
+      const type = els.typeFilter.value;
+
+      return items.filter((item) => {
+        const matchesChapter = activeChapter === "all" || item.chapter === activeChapter;
+        const matchesStatus = status === "all" || state.statuses[item.id] === status;
+        const matchesType = type === "all" || item.type === type;
+        const haystack = [
+          item.chapter,
+          item.chapterName,
+          item.title,
+          item.summary,
+          item.type,
+          ...(item.tags || [])
+        ].join(" ").toLowerCase();
+        const matchesQuery = !query || haystack.includes(query);
+        return matchesChapter && matchesStatus && matchesType && matchesQuery;
+      });
+    }
+
+    function renderSidebars() {
+      const items = allItems();
+      const next = items.filter((item) => state.statuses[item.id] !== "mastered").slice(0, 5);
+      els.nextList.innerHTML = next.length
+        ? next.map((item) => `<li><strong>${escapeHtml(item.chapter)}</strong> ${escapeHtml(item.title)}</li>`).join("")
+        : `<li>All listed SE topics are mastered.</li>`;
+
+      const learned = items.filter((item) => ["practiced", "mastered"].includes(state.statuses[item.id])).slice(0, 8);
+      els.learnedList.innerHTML = learned.length
+        ? learned.map((item) => `<li>${escapeHtml(item.title)}</li>`).join("")
+        : `<li>Mark practiced topics to build this list.</li>`;
+    }
+
+    function renderActivity() {
+      els.activityList.innerHTML = "";
+      if (!state.notes.length) {
+        const li = document.createElement("li");
+        li.textContent = "No revision logs yet.";
+        els.activityList.appendChild(li);
+        return;
+      }
+
+      state.notes.slice(0, 6).forEach((note) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${escapeHtml(note.date)}</strong><br>${escapeHtml(note.text)}`;
+        els.activityList.appendChild(li);
+      });
+    }
+
+    function weightedDone(value) {
+      return Number.isInteger(value) ? String(value) : value.toFixed(1);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function showToast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => {
+        els.toast.classList.remove("show");
+      }, 1800);
+    }
+  </script>
+</body>
+</html>
