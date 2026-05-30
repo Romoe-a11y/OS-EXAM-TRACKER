@@ -233,7 +233,7 @@
 
     .revision-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       margin-bottom: 14px;
     }
@@ -738,6 +738,16 @@
           <li><strong>Virtual memory:</strong> runs programs larger than RAM.</li>
         </ul>
       </article>
+      <article class="revision-card">
+        <h2>fork() Rules</h2>
+        <ul>
+          <li><code>fork() &lt; 0</code>: process creation failed.</li>
+          <li><code>fork() == 0</code>: this code runs in the child.</li>
+          <li><code>fork() &gt; 0</code>: this code runs in the parent.</li>
+          <li><strong>Memory:</strong> parent and child variables become independent.</li>
+          <li><code>wait()</code>: parent waits until a child finishes.</li>
+        </ul>
+      </article>
     </section>
 
     <section class="controls" aria-label="Filters">
@@ -863,6 +873,50 @@
         area: "process",
         summary: "Follow transitions between new, ready, running, blocked/waiting, and finished. Connect states to ready and waiting queues.",
         tags: ["new", "ready", "running", "blocked", "terminated", "ready queue"],
+        seed: "not-started"
+      },
+      {
+        id: "p1-fork",
+        chapter: "P1",
+        chapterName: "Processus",
+        title: "Create a process with fork()",
+        type: "practical",
+        area: "process",
+        summary: "fork() duplicates the current process. A negative value means failure, zero identifies the child, and a positive value identifies the parent.",
+        tags: ["fork()", "pid", "getpid()", "getppid()", "parent", "child"],
+        seed: "not-started"
+      },
+      {
+        id: "p1-fork-tree",
+        chapter: "P1",
+        chapterName: "Processus",
+        title: "Process trees and repeated fork() calls",
+        type: "practical",
+        area: "process",
+        summary: "Trace which processes reach each fork() call, draw the parent-child tree, and count the lines printed by every process.",
+        tags: ["fork()", "arborescence", "process tree", "output order"],
+        seed: "not-started"
+      },
+      {
+        id: "p1-fork-memory",
+        chapter: "P1",
+        chapterName: "Processus",
+        title: "Separate memory after fork()",
+        type: "exam",
+        area: "process",
+        summary: "The child starts with copied variable values, then parent and child modify independent memory spaces.",
+        tags: ["fork()", "memory copy", "x y z", "parent", "child"],
+        seed: "not-started"
+      },
+      {
+        id: "p1-wait-exit",
+        chapter: "P1",
+        chapterName: "Processus",
+        title: "wait() and exit() synchronization",
+        type: "practical",
+        area: "process",
+        summary: "exit() finishes a process. wait() blocks the parent until a child finishes and constrains the possible output order.",
+        tags: ["wait()", "exit()", "status", "synchronization", "order"],
         seed: "not-started"
       },
       {
@@ -1055,6 +1109,56 @@
     ];
 
     const exercises = [
+      {
+        id: "td2-ex1",
+        title: "TD2 Exercice 1: one fork(), PID, and output order",
+        summary: "Trace the parent and child branches after one fork(). List every possible printed line, find the minimum and maximum line count, and explain why the exact order is not predictable.",
+        tags: ["fork()", "pid", "ppid", "parent", "child"],
+        rows: [
+          ["fork() < 0", "Failure", "Print creation error"],
+          ["fork() == 0", "Child", "Print child PID and parent PID"],
+          ["fork() > 0", "Parent", "Print parent PID and child PID"],
+          ["After branch", "Both successful processes", "Print end-of-process line"]
+        ],
+        headers: ["Condition", "Process", "What to trace"]
+      },
+      {
+        id: "td2-ex2",
+        title: "TD2 Exercice 2: process tree after two fork() calls",
+        summary: "The program prints X, calls fork(), prints Y, calls fork(), then prints Z. Draw the process tree and propose one valid output sequence.",
+        tags: ["fork()", "process tree", "X Y Z", "output count"],
+        rows: [
+          ["Before forks", "1 process", "X prints once"],
+          ["After first fork", "2 processes", "Y prints twice"],
+          ["After second fork", "4 processes", "Z prints four times"]
+        ],
+        headers: ["Moment", "Process count", "Output consequence"]
+      },
+      {
+        id: "td2-ex3",
+        title: "TD2 Exercice 3: independent variables after fork()",
+        summary: "Start with x=3 and y=7. After fork(), the child and parent change x, y, and z differently. Draw memory before and after fork(), then calculate each printed value.",
+        tags: ["fork()", "memory", "x y z", "copy", "parent", "child"],
+        rows: [
+          ["Before fork", "x=3, y=7", "One memory space"],
+          ["Child branch", "z=0, x=x+5, y=y-2", "Independent copied memory"],
+          ["Parent branch", "z=1, x=x-1, y=y+4", "Independent original memory"]
+        ],
+        headers: ["Branch", "Operations", "Memory idea"]
+      },
+      {
+        id: "td2-ex4",
+        title: "TD2 Exercice 4: wait() constrains output order",
+        summary: "Trace M before fork(), F in the child, P and O in the parent, and X after the branch. Explain exactly what wait() guarantees.",
+        tags: ["fork()", "wait()", "exit()", "M F P O X"],
+        rows: [
+          ["M", "Original process", "Always before fork()"],
+          ["F", "Child", "Printed before child exit()"],
+          ["P then O", "Parent", "O prints only after wait() returns"],
+          ["X", "Parent", "Printed after O"]
+        ],
+        headers: ["Letter", "Process", "Ordering rule"]
+      },
       {
         id: "td3-ex1",
         title: "TD3 Exercice 1: FCFS, SJF, SRTF, RR q=4",
